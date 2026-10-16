@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Judäa am Scheideweg · Interaktive Lernakte</title>
+<style>
+:root{
+  --bg:#0e171d;
+  --bg2:#13232b;
+  --panel:#172a32;
+  --panel-soft:#213741;
+  --panel-light:#f4eddc;
+  --ink:#edf1eb;
+  --muted:#bfd0ce;
+  --muted2:#8ea4a9;
+  --gold:#d9b36d;
+  --gold-strong:#efc884;
+  --accent:#85cbbd;
+  --danger:#e7ac9f;
+  --ok:#9fd7af;
+  --shadow:0 12px 35px rgba(0,0,0,.28);
+  --radius:18px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  font:16px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+  color:var(--ink);
+  background:
+    radial-gradient(circle at 10% 10%, rgba(133,203,189,.08), transparent 23%),
+    radial-gradient(circle at 90% 0%, rgba(217,179,109,.1), transparent 26%),
+    linear-gradient(180deg, #0d171d 0%, #0f1e24 100%);
+}
+img{max-width:100%;display:block}
+a{color:inherit}
+button,input,textarea,select{font:inherit}
+button{cursor:pointer}
+button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible,summary:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+.shell{max-width:1240px;margin:0 auto;padding:0 24px 64px}
+.mast{
+  padding:16px 0;
+  display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;
+  border-bottom:1px solid rgba(255,255,255,.08)
+}
+.brandline{display:flex;flex-direction:column;gap:3px}
+.mark{font-size:.76rem;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);font-weight:800}
+.small{font-size:.85rem;color:var(--muted)}
+.top-actions{display:flex;gap:9px;flex-wrap:wrap}
+.btn{
+  border:1px solid rgba(255,255,255,.13);
+  color:var(--ink);
+  background:#243a43;
+  padding:10px 14px;border-radius:12px;font-weight:700;
+  transition:.18s ease;
+}
+.btn:hover{transform:translateY(-1px);border-color:var(--gold);background:#2a444e}
+.btn.primary{background:linear-gradient(180deg,var(--gold-strong),var(--gold));color:#18232b;border-color:transparent}
+.btn.primary:hover{background:linear-gradient(180deg,#f2d398,#deb672)}
+.btn.ghost{background:transparent}
+.btn.tiny{padding:7px 10px;font-size:.82rem}
+.btn.selected{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent) inset;color:#dff7f2}
+.btn:disabled{opacity:.45;cursor:not-allowed;transform:none}
+.hero{
+  margin:28px 0 22px;
+  min-height:440px;
+  border-radius:26px;
+  overflow:hidden;
+  position:relative;
+  display:grid;
+  align-items:end;
+  background:
+    linear-gradient(180deg, rgba(8,13,16,.28) 0%, rgba(8,13,16,.72) 66%, rgba(8,13,16,.9) 100%),
+    url('assets/title-hero.png') center/cover no-repeat;
+  box-shadow:var(--shadow);
+  border:1px solid rgba(255,255,255,.08);
+}
+.hero:before{
+  content:"";position:absolute;inset:0;
+  background:linear-gradient(90deg, rgba(8,13,16,.75) 0%, rgba(8,13,16,.2) 44%, rgba(8,13,16,.55) 100%);
+}
+.hero-inner{position:relative;z-index:1;padding:34px 34px 30px;display:grid;grid-template-columns:1.2fr .8fr;gap:24px;align-items:end}
+.kicker{font-size:.8rem;letter-spacing:.18em;text-transform:uppercase;color:#bee7df;font-weight:800}
+h1,h2,h3,h4{font-family:Georgia,"Times New Roman",serif;line-height:1.15;margin:0 0 10px}
+h1{font-size:clamp(2.3rem,6vw,4.6rem);letter-spacing:-.04em}
+h2{font-size:clamp(1.6rem,4vw,2.45rem)}
+h3{font-size:1.35rem}
+h4{font-size:1.05rem}
+p{margin:0 0 14px}
+.lede{font-size:1.08rem;max-width:700px;color:#ebf2ed}
+.headline-box{
+  justify-self:end;align-self:start;
+  width:min(360px,100%);
+  background:rgba(248,237,218,.94);color:#28353b;border-radius:20px;padding:18px 20px;
+  box-shadow:0 14px 28px rgba(0,0,0,.18);
+  transform:translateY(-18px)
+}
+.headline-box .newstitle{font-size:.82rem;letter-spacing:.15em;text-transform:uppercase;color:#6d5532;font-weight:800;margin-bottom:8px}
+.headline-box b{display:block;font:700 1.55rem/1.05 Georgia,serif;margin-bottom:8px}
+.headline-box p{margin:0;color:#435058}
+.paper{
+  background:linear-gradient(180deg, rgba(28,47,56,.96), rgba(19,36,43,.98));
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:var(--radius);
+  padding:22px;
+  box-shadow:var(--shadow)
+}
+.paper.light{background:linear-gradient(180deg,#f4eddc,#efe3c6);color:#28363c;border-color:#d2bd93}
+.paper.light p,.paper.light li{color:#324148}
+.section{margin:18px 0}
+.label{font-size:.74rem;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);font-weight:800;margin-bottom:8px}
+.muted{color:var(--muted)}
+.muted2{color:var(--muted2)}
+.iconline{display:flex;gap:10px;align-items:center}
+.icon-badge{display:grid;place-items:center;width:42px;height:42px;border-radius:50%;background:rgba(133,203,189,.12);border:1px solid rgba(133,203,189,.24);font-size:1.25rem}
+.start-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:18px;margin:18px 0 26px}
+.info-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.mini-card{padding:16px;background:#1a2f38;border:1px solid rgba(255,255,255,.07);border-radius:16px}
+.mini-card p{margin:0;color:#d9e4e2}
+.group-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:18px}
+.groupcard{
+  border-radius:18px;overflow:hidden;border:1px solid rgba(255,255,255,.08);background:#13252d;box-shadow:var(--shadow);
+  display:flex;flex-direction:column;min-height:390px;transition:.18s ease
+}
+.groupcard:hover,.groupcard.selected{transform:translateY(-3px);border-color:rgba(217,179,109,.6)}
+.groupcard .cover{aspect-ratio:4/5;background:center/cover no-repeat;position:relative}
+.groupcard .cover:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg, rgba(0,0,0,.04), rgba(0,0,0,.56) 100%)}
+.groupcard .stamp{position:absolute;left:12px;top:12px;z-index:1;background:rgba(10,18,22,.82);border:1px solid rgba(255,255,255,.18);padding:7px 10px;border-radius:999px;font-size:.75rem;font-weight:800;color:var(--gold)}
+.groupcard .body{padding:18px 18px 16px;display:flex;flex-direction:column;gap:10px;height:100%}
+.groupcard .body .title{font:700 1.45rem Georgia,serif}
+.groupcard .body p{margin:0;color:#d8e4e0}
+.groupcard .meta{display:flex;gap:8px;flex-wrap:wrap}
+.tag{padding:5px 9px;border:1px solid rgba(255,255,255,.1);border-radius:999px;font-size:.76rem;color:#cfe0db}
+.groupcard .open{margin-top:auto;color:var(--gold);font-weight:800}
+.app-layout{display:grid;grid-template-columns:290px 1fr;gap:22px;align-items:start;margin-top:22px}
+.sidebar{position:sticky;top:14px;display:flex;flex-direction:column;gap:14px}
+.navbtn{display:block;width:100%;text-align:left;background:transparent;color:var(--muted);border:1px solid transparent;padding:11px 12px;border-radius:12px}
+.navbtn:hover,.navbtn.active{background:#213741;color:var(--ink);border-color:rgba(255,255,255,.08)}
+.navbtn .n{font-weight:800;color:var(--gold);margin-right:9px}.navbtn .done{float:right;color:var(--ok)}
+.progress{height:8px;background:#364c52;border-radius:999px;overflow:hidden;margin-top:10px}.progress>div{height:100%;background:linear-gradient(90deg,var(--gold),var(--accent));transition:.25s}
+.deck{display:flex;flex-direction:column;gap:18px}
+.mission{overflow:hidden}
+.mission-header{display:grid;grid-template-columns:1fr auto;gap:18px;align-items:start;margin-bottom:8px}
+.badge{display:inline-flex;align-items:center;gap:6px;font-size:.78rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#dcece9;padding:8px 12px;border-radius:999px;background:rgba(133,203,189,.1);border:1px solid rgba(133,203,189,.22)}
+.task{padding:18px 0;border-top:1px solid rgba(255,255,255,.08)}
+.task:first-of-type{border-top:0}
+.tasklabel{display:block;font-weight:800;margin-bottom:8px;font-size:1rem}
+.task small{display:block;color:var(--muted2);margin-top:5px}
+.field,.short-input{
+  width:100%;border-radius:14px;border:1px solid #49616c;background:#0f2129;color:var(--ink);padding:13px 14px;
+}
+.field{min-height:120px;resize:vertical}
+.short-input{min-height:auto}
+textarea::placeholder,input::placeholder{color:#8ea3a7}
+.choice-pills,.radio-stack,.chips{display:flex;gap:9px;flex-wrap:wrap;margin:10px 0}
+.option{display:block;padding:12px 14px;border-radius:14px;border:1px solid rgba(255,255,255,.1);background:#162c35;cursor:pointer;margin:10px 0}
+.option:has(input:checked){border-color:var(--gold);background:#3a3428}
+.option input{margin-right:8px}
+.note{
+  border-left:4px solid var(--accent);background:#15343a;color:#dff5f1;padding:14px 16px;border-radius:0 14px 14px 0;margin:14px 0
+}
+.notice{
+  border-left:4px solid var(--gold);background:#4d4028;color:#fae7c3;padding:14px 16px;border-radius:0 14px 14px 0;margin:14px 0
+}
+.warnbox{
+  border-left:4px solid var(--danger);background:#4a322e;color:#fee2da;padding:14px 16px;border-radius:0 14px 14px 0;margin:14px 0
+}
+.feedback{padding:12px 14px;border-radius:12px;background:#17383c;border:1px solid rgba(133,203,189,.25);color:#d7f2ec;margin-top:10px}
+.feedback.warn{background:#452f2b;border-color:rgba(231,172,159,.3);color:#ffe3db}
+.cards-2{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.cards-3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.dossier-hero{display:grid;grid-template-columns:320px 1fr;gap:18px;align-items:start;margin:10px 0 14px}
+.dossier-hero .portrait{border-radius:18px;overflow:hidden;border:1px solid rgba(255,255,255,.1);box-shadow:var(--shadow)}
+.fact-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:14px}
+.fact-card{background:#13272f;border:1px solid rgba(255,255,255,.07);border-radius:16px;padding:16px}
+.fact-card h4{margin-bottom:7px}
+.fact-card p,.fact-card li{margin:0;color:#dbe6e3}
+.fact-card ul{padding-left:18px;margin:8px 0 0}
+.timeline{display:grid;gap:12px;margin-top:12px}
+.timeline .item{display:grid;grid-template-columns:110px 1fr;gap:14px;align-items:start;padding:12px 0;border-bottom:1px solid rgba(255,255,255,.07)}
+.timeline .item:last-child{border-bottom:0}
+.timeline .time{font-weight:800;color:var(--gold)}
+details{
+  background:#11242c;border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:0 14px;margin:12px 0
+}
+summary{cursor:pointer;list-style:none;padding:14px 0;font-weight:800;color:#e7efe9}
+summary::-webkit-details-marker{display:none}
+details .details-body{padding:0 0 14px;color:#dce6e4}
+hr.divider{border:0;border-top:1px solid rgba(255,255,255,.08);margin:22px 0}
+.matrix{overflow:auto;border:1px solid rgba(255,255,255,.08);border-radius:14px}
+.matrix table{width:100%;border-collapse:collapse;min-width:680px}
+.matrix th,.matrix td{padding:12px 10px;border-bottom:1px solid rgba(255,255,255,.08);border-right:1px solid rgba(255,255,255,.06);vertical-align:top;text-align:left}
+.matrix th{background:#17303a;color:#f0efe9;font-weight:800}
+.matrix td:last-child,.matrix th:last-child{border-right:0}
+.matrix tr:last-child td{border-bottom:0}
+.summaryrow{display:grid;grid-template-columns:210px 1fr;gap:16px;padding:14px 0;border-bottom:1px solid rgba(255,255,255,.08)}
+.summaryrow strong{color:var(--gold)}
+.footer{margin-top:34px;border-top:1px solid rgba(255,255,255,.08);padding:20px 0;font-size:.82rem;color:var(--muted2)}
+.printhead{display:none}
+.hide{display:none!important}
+.screen-only{}
+@media (max-width: 1020px){
+  .group-grid{grid-template-columns:repeat(2,1fr)}
+  .app-layout,.start-grid,.hero-inner,.dossier-hero{grid-template-columns:1fr}
+  .sidebar{position:static}
+  .headline-box{justify-self:start;transform:none;width:auto}
+  .info-grid,.cards-3{grid-template-columns:1fr 1fr}
+}
+@media (max-width: 700px){
+  .shell{padding:0 14px 40px}
+  .hero{min-height:520px}
+  .group-grid,.info-grid,.cards-2,.cards-3,.fact-grid{grid-template-columns:1fr}
+  .timeline .item,.summaryrow{grid-template-columns:1fr}
+}
+@media print{
+  body{background:white;color:#111}
+  .mast,.sidebar,.hero,.group-grid,.screen-only,.footer{display:none!important}
+  .shell{padding:0;max-width:none}
+  .app-layout{display:block}
+  .paper{background:white!important;color:#111!important;border:0;box-shadow:none;padding:0}
+  .printhead{display:block}
+  .summaryrow{break-inside:avoid;border-color:#ccc}
+  .summaryrow strong,.label,.badge,.tag{color:#333!important}
+  .muted,.muted2,p,li,.details-body{color:#111!important}
+  details{border:1px solid #aaa;background:white!important}
+}
+</style>
+</head>
+<body>
+<div class="shell">
+  <header class="mast">
+    <div class="brandline">
+      <div class="mark">✦ Archiv der Zeitenwende</div>
+      <div class="small">Religion · Kursstufe 12 · Basisfach · Interaktive Lernakte</div>
+    </div>
+    <div class="top-actions screen-only">
+      <button class="btn tiny ghost" id="homeBtn">⌂ Übersicht</button>
+      <button class="btn tiny ghost" id="exportBtn">↓ Akte als PDF</button>
+      <button class="btn tiny ghost" id="backupBtn">↓ Antworten sichern</button><button class="btn tiny ghost" id="restoreBtn">↑ Antworten laden</button><input type="file" id="restoreInput" accept=".json,application/json" hidden>
+    </div>
+  </header>
+  <main id="app"></main>
+  <footer class="footer">Quellen und Vertiefung: Ausgangsmaterial „Religiöse Gruppierungen“, Bibelstellen in den Gruppenakten, <a href="https://dss.collections.imj.org.il/" target="_blank" rel="noopener">Israel Museum – Digital Dead Sea Scrolls</a>, <a href="https://researchguides.uoregon.edu/early-Judaism/sadducees" target="_blank" rel="noopener">University of Oregon – Early Judaism</a>. Die Bilder sind KI-generierte historische Annäherungen, keine authentischen Darstellungen. Hinweis: Die Podiumsdiskussion ist als didaktische Rekonstruktion gestaltet. Die Gruppen werden bewusst typisiert, damit historische Positionen verständlich werden. Antworten werden nur lokal im Browser gespeichert.</footer>
+</div>
+<script>
+const groupData={
+  phar:{
+    id:'phar', name:'Pharisäer', icon:'📜', image:'assets/pharisaeer.png',
+    subtitle:'Tora · Auslegung · Alltag', motto:'Heiligung des Alltags durch Gottes Gebote',
+    teaser:'Laienbewegung mit großer Nähe zum Volk; sie wollen Gottes Willen mitten im Alltag verwirklichen.',
+    role:'Viele Pharisäer stammen aus der unteren und mittleren Schicht. Als Schriftgelehrte und Torakenner genießen sie hohes Ansehen. Sie sind keine Priesteraristokratie, sondern eine einflussreiche Laienbewegung.',
+    torah:'Die schriftliche Tora bleibt verbindlich, muss aber durch mündliche Auslegung auf neue Lebenssituationen angewendet werden. Reinheit und Sabbat werden nicht nur für den Tempel, sondern für den Alltag wichtig.',
+    rome:'Die römische Fremdherrschaft wird abgelehnt. Dennoch setzen die Pharisäer im Normalfall nicht auf bewaffneten Aufstand, sondern auf religiöse Erneuerung und Treue zu Gottes Geboten.',
+    hope:'Viele Pharisäer glauben an Auferstehung, Engel und ein kommendes Reich Gottes. Wenn Israel Gottes Willen ernst nimmt, kann Gott sein Volk erneuern.',
+    relation:'Mit Jesus gibt es Nähe und Streit zugleich: Er teilt mit ihnen den Ernst gegenüber Gott, kritisiert aber ihre Ausgrenzung, ihren Stolz und manche gesetzliche Verhärtung.',
+    deepen:[
+      'Wahrscheinlich leitet sich der Name von „die Abgesonderten“ ab – gemeint ist eine bewusste Abgrenzung gegenüber Unreinheit und Gesetzesbruch.',
+      'Die Pharisäer wollen Frömmigkeit nicht auf Priester oder Tempel begrenzen, sondern in Haus, Markt und Nachbarschaft leben.',
+      'Nach der Tempelzerstörung 70 n. Chr. werden gerade pharisäische Traditionen wichtig für das spätere rabbinische Judentum.'
+    ],
+    correct:'B',
+    quiz:'Welche Kurzbeschreibung trifft die Pharisäer am besten?',
+    opts:['Priesterelite, die vor allem durch Tempelopfer und Zusammenarbeit mit Rom wirkt.','Laienbewegung, die Gottes Gebote durch Auslegung im Alltag zur Geltung bringen will.','Abgeschiedene Wüstengemeinschaft mit Gütergemeinschaft und rituellen Waschungen.'],
+    speechHint:'Wir stehen nicht für Chaos, sondern für ein geordnetes Leben vor Gott. Ohne Tora verliert das Volk seine Mitte.',
+    caseFocus:'Gesetz und Barmherzigkeit, Reinheit, Umgang mit „Sündern“',
+    jesusText:'Mk 2,23–28',
+    jesusTitle:'Jesus und der Sabbat',
+    jesusSummary:'Jesus verteidigt seine Jünger gegen den Vorwurf des Sabbatbruchs und betont, dass der Sabbat dem Menschen dienen soll.',
+    jesusLink:'Jesus ist für uns zugleich Gesprächspartner und Herausforderung: Er nimmt die Tora ernst, kritisiert aber, wenn Auslegung menschenfeindlich wird.'
+  },
+  sad:{
+    id:'sad', name:'Sadduzäer', icon:'🏛️', image:'assets/sadduzaeer.png',
+    subtitle:'Tempel · Ordnung · Macht', motto:'Stabilität des Tempelstaates bewahren',
+    teaser:'Kleine, aber politisch und religiös mächtige Elite rund um Tempel und Hohen Rat.',
+    role:'Die Sadduzäer stammen überwiegend aus priesterlichen und wohlhabenden Familien Jerusalems. Aus ihrem Umfeld kommen Hohepriester und führende Mitglieder des Synhedriums.',
+    torah:'Für sie hat vor allem die schriftliche Tora höchste Autorität. Spätere mündliche Auslegungen gelten ihnen als weniger verbindlich. In Glaubensfragen sind sie konservativ.',
+    rome:'Sie arbeiten mit den Römern zusammen, um den Tempelbetrieb, ihre Stellung und die politische Ordnung zu sichern. Bewaffnete Aufstände lehnen sie ab.',
+    hope:'Sie setzen eher auf den Erhalt der bestehenden Ordnung als auf eine apokalyptische Umwälzung. Die Auferstehung der Toten lehnen sie ab.',
+    relation:'Jesu Tempelkritik bedroht direkt ihre Interessen. Auch in der Frage nach der Auferstehung und beim Umgang mit dem Tempel steht Jesus in scharfer Spannung zu ihnen.',
+    deepen:[
+      'Der Name wird häufig mit dem Hohepriester Zadok verbunden, dessen Linie priesterliches Prestige verkörpert.',
+      'Ihre Macht konzentriert sich besonders in Jerusalem und am Tempel – nicht so sehr im ländlichen Alltagsleben des Volkes.',
+      'Weil der Tempel für Kult, Einkommen und politische Einflussnahme zentral ist, trifft Jesu Tempelaktion die Sadduzäer besonders hart.'
+    ],
+    correct:'B',
+    quiz:'Welche politische Grundlinie passt am ehesten zu den Sadduzäern?',
+    opts:['Rückzug aus der Gesellschaft in die Wüste.','Kooperation mit Rom zur Sicherung von Tempel und Ordnung.','Radikaler Aufstand gegen jede Fremdherrschaft.'],
+    speechHint:'Wenn der Tempel fällt, verliert unser Volk sein Zentrum. Ordnung ist kein Verrat, sondern Voraussetzung des Überlebens.',
+    caseFocus:'Tempel, Hoher Rat, Status quo, Konflikt mit Rom vermeiden',
+    jesusText:'Mk 11,15–18',
+    jesusTitle:'Jesu Tempelaktion',
+    jesusSummary:'Jesus vertreibt Händler und Geldwechsler aus dem Tempelbereich und klagt an, dass aus dem Haus Gottes ein Ort der Ausbeutung geworden sei.',
+    jesusLink:'Jesus stellt das Herz unseres Macht- und Religionssystems infrage: Tempelbetrieb, Autorität und religiöse Legitimation geraten in die Krise.'
+  },
+  ess:{
+    id:'ess', name:'Essener', icon:'🏜️', image:'assets/essener.png',
+    subtitle:'Reinheit · Rückzug · Erwartung', motto:'Absonderung als Weg zu Gottes kommendem Reich',
+    teaser:'Strenge Gemeinschaften mit starker Reinheitsfrömmigkeit; häufig mit Qumran und den Schriftrollen vom Toten Meer verbunden.',
+    role:'Die Essener leben in bewusst geordneten Gemeinschaften, oft fern vom gesellschaftlichen Zentrum. Gütergemeinschaft, Disziplin und Frömmigkeit prägen ihren Alltag.',
+    torah:'Sie halten die Tora sehr streng und verbinden sie mit detaillierten Regeln der Reinheit. Die Gemeinschaft versteht sich oft als wahre, von Gott vorbereitete Restgemeinschaft.',
+    rome:'Wie die Pharisäer lehnen sie die Fremdherrschaft ab, setzen aber in der Regel nicht auf offenen bewaffneten Widerstand. Ihr Weg ist eher Distanz, Reinheit und endzeitliche Erwartung.',
+    hope:'Sie erwarten das nahe Eingreifen Gottes. Viele rechnen mit einem Endkampf und sehen ihre Gemeinschaft als Vorbereitung auf das kommende Reich.',
+    relation:'Direkte Begegnungen Jesu mit Essenern sind im Neuen Testament nicht erzählt. Nähe gibt es bei Endzeiterwartung und Umkehr, Distanz beim Rückzug aus der Welt.',
+    deepen:[
+      'Die Verbindung von Essenern und Qumran ist in der Forschung verbreitet, aber nicht in jedem Detail völlig gesichert. Für den Unterricht lässt sich sie jedoch gut als Arbeitshypothese nutzen.',
+      'Rituale Waschungen, gemeinsames Eigentum und eine stark geregelte Gemeinschaftsordnung prägen ihr Profil.',
+      'Im Unterschied zu Jesus suchen sie Reinheit vor allem durch Absonderung; Jesus begegnet Menschen mitten in Dörfern, Häusern und Straßen.'
+    ],
+    correct:'C',
+    quiz:'Was passt am besten zu den Essenern?',
+    opts:['Sie sind die einflussreichste Priestergruppe im Tempel.','Sie kämpfen als Guerillabewegung mit Waffen gegen Rom.','Sie leben als strenge Gemeinschaft mit Reinheitsregeln, Schriftstudium und Distanz zur Gesellschaft.'],
+    speechHint:'Eine korrupte Gesellschaft kann nicht durch Anpassung geheilt werden. Gottes Volk muss sich reinigen und vorbereiten.',
+    caseFocus:'Absonderung, Reinheit, Endzeiterwartung, Gemeinschaftsordnung',
+    jesusText:'Mt 3,1–6 / Mk 1,4–5 (mit Blick auf Johannes)',
+    jesusTitle:'Johannes der Täufer und die Wüste',
+    jesusSummary:'Johannes ruft in der Wüste zur Umkehr und tauft Menschen. Jesus knüpft an diese Umkehrbewegung an, bleibt aber nicht in der Wüste, sondern geht zu den Menschen.',
+    jesusLink:'Jesus teilt die Dringlichkeit der Umkehr, lehnt aber die dauerhafte Absonderung als Lebensform ab.'
+  },
+  zel:{
+    id:'zel', name:'Zeloten', icon:'🗡️', image:'assets/zeloten.png',
+    subtitle:'Freiheit · Eifer · Widerstand', motto:'Kein Herr außer Gott',
+    teaser:'Widerstandsorientierte Eiferer gegen römische Fremdherrschaft – in der Zeit Jesu eher als Strömung, später klarer organisiert.',
+    role:'Die Zeloten bzw. zelotischen Kreise stammen oft aus benachteiligten Schichten. Sie empfinden römische Herrschaft, Steuerdruck und religiöse Demütigung als unerträglich.',
+    torah:'Die Tora wird national-religiös gelesen: Wenn Gott allein Herr ist, darf kein heidnischer Fremdherrscher über Israel gebieten.',
+    rome:'Die Fremdherrschaft wird radikal abgelehnt. Anders als die übrigen Gruppen halten zelotische Kreise Gewalt im Extremfall für legitim.',
+    hope:'Sie erwarten die politische Befreiung Israels und oft einen messianischen Führer. Gottes Herrschaft wird mit nationaler Freiheit verbunden.',
+    relation:'Jesus teilt die Kritik an Ungerechtigkeit, weist aber die Logik von Gewalt, Vergeltung und bewaffnetem Aufstand zurück.',
+    deepen:[
+      'Historisch ist Vorsicht wichtig: Als fest organisierte Partei greifen die Quellen deutlicher erst im Jüdischen Krieg ab 66 n. Chr. Für die Zeit Jesu spricht man darum oft vorsichtiger von widerstandsorientierten Eiferern.',
+      'Steuern, Besatzung und Symbole fremder Macht wirken als permanente Provokation.',
+      'In den Evangelien klingt die Nähe mancher Erwartungen an, aber Jesus lässt sich nicht auf einen politischen Befreiungskämpfer reduzieren.'
+    ],
+    correct:'C',
+    quiz:'Worin unterscheiden sich zelotische Kreise besonders von den anderen Gruppen?',
+    opts:['Sie orientieren sich nur an der mündlichen Tora.','Sie ziehen sich vollständig in Wüstengemeinschaften zurück.','Sie halten gewaltsamen Widerstand gegen Rom für denkbar oder nötig.'],
+    speechHint:'Ein Volk Gottes darf nicht ewig knien. Wer Rom schützt, verrät Israel.',
+    caseFocus:'Steuern, Besatzung, Gewaltfrage, messianische Befreiung',
+    jesusText:'Mt 5,38–48',
+    jesusTitle:'Vergeltung und Feindesliebe',
+    jesusSummary:'Jesus ruft dazu auf, nicht mit Vergeltung zu antworten, sondern sogar Feinde zu lieben und auf Gewaltspiralen nicht mit neuer Gewalt zu reagieren.',
+    jesusLink:'Jesu Reich-Gottes-Botschaft bricht die Logik bewaffneter Gegengewalt auf – und ist damit eine massive Herausforderung.'
+  }
+};
+
+const sharedCases=[
+  {title:'Konflikt 1 · Steuerdruck und Besatzung', text:'Römische Abgaben belasten viele Menschen. Gleichzeitig sichern römische Truppen die Herrschaft. Wie soll das Volk reagieren?', question:'Welche Lösung schlägt eure Delegation vor – Anpassung, gesetzestreue Erneuerung, Rückzug oder Widerstand?'},
+  {title:'Konflikt 2 · Gesetz oder Barmherzigkeit?', text:'Eine Person hat offen gegen religiöse Normen verstoßen. Einige fordern Strafe, andere einen neuen Anfang.', question:'Wie verbindet ihr Gottes Willen, Gemeinschaftsschutz und den Blick auf den konkreten Menschen?'},
+  {title:'Konflikt 3 · Wem dient der Tempel?', text:'Im Tempelbereich vermischen sich Frömmigkeit, Geld, Opferpraxis und politische Interessen.', question:'Soll der Tempel bewahrt, gereinigt, reformiert oder grundsätzlich anders gedacht werden?'}
+];
+
+const worksheetHints={
+  a:{title:'a) Eine Frau wird beim Ehebruch ertappt.', rows:[
+    ['Pharisäer','Tendenz zur Orientierung am Gesetz; je nach Strenge Betonung von Schuld und Reinheit. Jesus problematisiert jedoch gerade die harte, selbstgerechte Verurteilung.'],
+    ['Essener','Wahrscheinlich scharfe Abgrenzung von Unreinheit und Gesetzesverstoß; Schutz der Gemeinschaft durch klare Distanz.']
+  ]},
+  b:{title:'b) Ein Jude treibt für die Römer Steuern ein.', rows:[
+    ['Pharisäer','Kritische Distanz: Zusammenarbeit mit Rom gilt als problematisch, aber nicht jede Antwort ist Gewalt.'],
+    ['Zeloten','Massive Ablehnung: Wer Rom dient, macht sich aus ihrer Sicht mitschuldig an Unterdrückung.'],
+    ['Sadduzäer','Eher pragmatisch oder duldend, solange die politische Ordnung stabil bleibt.']
+  ]},
+  c:{title:'c) Jesus vertreibt Händler aus dem Tempelbereich.', rows:[
+    ['Pharisäer','Je nach Perspektive Zustimmung zur Kritik an Missständen, aber Skepsis gegenüber dem radikalen Auftreten.'],
+    ['Zeloten','Könnten in der Tempelkritik ein Zeichen mutigen Widerstands sehen.'],
+    ['Sadduzäer','Klare Ablehnung: Angriff auf Tempelordnung und Autorität.']
+  ]},
+  d:{title:'d) Die Römer wollen ein Kultbild des Kaisers im Tempel aufstellen.', rows:[
+    ['Pharisäer','Klare Ablehnung wegen Gottesgebot und Bilderverbot.'],
+    ['Zeloten','Radikale Ablehnung – hier wäre Widerstand fast zwangsläufig.'],
+    ['Sadduzäer','Auch sie würden eine direkte Entweihung des Tempels schwer akzeptieren, wären aber politisch um Schadensbegrenzung bemüht.']
+  ]}
+};
+
+const labels={
+  context_causes:'Historische Spannungen erkennen',
+  context_question:'Leitfrage der Krise',
+  dossier_terms:'Drei Leitbegriffe',
+  dossier_chance:'Stärke der Gruppe',
+  dossier_risk:'Grenze / Risiko',
+  priority:'Wichtigste politische Priorität',
+  manifesto:'Kernforderung',
+  arguments:'Tragende Argumente',
+  objection:'Möglicher Einwand',
+  rebuttal:'Antwort auf den Einwand',
+  speech:'Delegationsstatement',
+  debate_other:'Stärkstes Gegenargument anderer',
+  debate_revise:'Was wir präzisieren mussten',
+  debate_case:'Problemfall aus dem Arbeitsblatt',
+  jesus_observe:'Beobachtungen zur Bibelstelle',
+  jesus_compare:'Vergleich mit eurer Gruppe',
+  jesus_judgement:'Jesus als Verbündeter, Herausforderung oder Gegner?',
+  thesis:'Gewählte These',
+  final_judgement:'Abschließendes Urteil',
+  transfer:'Transfer in die Gegenwart',
+  plenum_comp:'Gemeinsamer Vergleich der vier Perspektiven',
+  plenum_jesus:'Jesu besonderer Weg – gemeinsame Sicherung',
+  plenum_question:'Offene Rückfrage nach der Diskussion'
+};
+
+const priorityChoices={
+  phar:['Treue zur Tora im Alltag','Schutz der religiösen Identität','Erneuerung des Volkes ohne Gewalt'],
+  sad:['Stabilität des Tempels','Sicherung politischer Ordnung','Erhalt des Status quo'],
+  ess:['Reinheit der Gemeinschaft','Absonderung von Verderbnis','Vorbereitung auf Gottes Eingreifen'],
+  zel:['Befreiung von Rom','Mut zum Widerstand','Ehre Gottes durch Unabhängigkeit']
+};
+
+const thesisOptions=[
+  ['a','Jesus wollte vor allem religiöse Regeln abschaffen.'],
+  ['b','Jesus stellte nicht die Tora selbst, sondern bestimmte Auslegungen und den Umgang mit Menschen infrage.'],
+  ['c','Jesu Reich-Gottes-Botschaft war einfach eine weitere politische Parteiposition.']
+];
+
+function $(id){return document.getElementById(id)}
+const state=JSON.parse(localStorage.getItem('judaeaQuestV2')||'{"group":null,"step":null,"answers":{},"checked":{},"choices":{}}');
+if(state.step===null) state.step=0;
+function save(){localStorage.setItem('judaeaQuestV2', JSON.stringify(state))}
+function key(name){return state.group+':'+name}
+function get(name){return state.answers[key(name)]||''}
+function setAnswer(name,val){state.answers[key(name)] = val; save()}
+function getChoice(name){return state.choices[key(name)]||''}
+function setChoice(name,val){state.choices[key(name)] = val; save()}
+function done(name){return !!state.checked[key(name)]}
+function markDone(name){state.checked[key(name)] = true; save(); render()}
+function esc(s){return String(s||'').replace(/[&<>"]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[m]))}
+function chooseGroup(id){state.group=id; state.step=0; save(); render()}
+function nav(step){state.step=step; save(); render(); window.scrollTo({top:0,behavior:'smooth'})}
+
+function heroHome(){
+  return `<section class="hero">
+    <div class="hero-inner">
+      <div>
+        <div class="kicker">Sonderakte · Jerusalem um 30 n. Chr.</div>
+        <h1>Judäa am Scheideweg</h1>
+        <p class="lede">Zwischen Fremdherrschaft, religiöser Hoffnung und gesellschaftlicher Krise ringen verschiedene jüdische Gruppierungen um den richtigen Weg. Eure Aufgabe: Erschließt eure Delegation, vertretet sie in der Krisenkonferenz – und prüft anschließend, wie Jesus diese Fronten durchkreuzt.</p>
+        <div class="chips" style="margin-top:18px">
+          <span class="tag">interaktive Gruppenakte</span>
+          <span class="tag">historische Krisenkonferenz</span>
+          <span class="tag">Jesus als Herausforderung</span>
+        </div>
+      </div>
+      <div class="headline-box">
+        <div class="newstitle">Jerusalem aktuell</div>
+        <b>Wem gehört die Zukunft unseres Volkes?</b>
+        <p>Römische Truppen sichern die Ordnung, soziale Spannungen nehmen zu, der Tempel bleibt religiöses Zentrum – und ein Prediger aus Galiläa sorgt für Unruhe.</p>
+      </div>
+    </div>
+  </section>`;
+}
+
+function home(){
+  return `${heroHome()}
+  <section class="start-grid">
+    <article class="paper">
+      <div class="label">So arbeitet ihr</div>
+      <div class="info-grid">
+        <div class="mini-card"><div class="iconline"><div class="icon-badge">1</div><h4>Delegation wählen</h4></div><p>Jede Gruppe öffnet ihre eigene Akte: Pharisäer, Sadduzäer, Essener oder Zeloten.</p></div>
+        <div class="mini-card"><div class="iconline"><div class="icon-badge">2</div><h4>Missionen bearbeiten</h4></div><p>Ihr informiert euch, entwickelt Positionen und haltet zentrale Gedanken schriftlich fest.</p></div>
+        <div class="mini-card"><div class="iconline"><div class="icon-badge">3</div><h4>Diskutieren</h4></div><p>Bei der Krisenkonferenz werden die Tablets bewusst zur Seite gelegt. Eure mündliche Auseinandersetzung ist Teil des Lernwegs.</p></div>
+      </div>
+      <div class="notice"><b>Wichtig:</b> Nicht alles ist reine Tablet-Arbeit. Sobald ein <b>Konferenz-Stop</b> erscheint, besprecht ihr euch in der Gruppe oder diskutiert im Plenum.</div>
+    </article>
+    <article class="paper light">
+      <div class="label">Leitfrage</div>
+      <h2>Wie kann ein Volk Gottes unter Fremdherrschaft leben?</h2>
+      <p>Im Hintergrund stehen mehrere Konflikte zugleich: politische Besatzung, soziale Not, religiöse Reinheit, Hoffnung auf Rettung und die Frage, wie Gottes Wille im Alltag verwirklicht werden soll.</p>
+      <div class="timeline">
+        <div class="item"><div class="time">63 v. Chr.</div><div>Jerusalem gerät unter römischen Einfluss – Fremdherrschaft wird zum dauerhaften Thema.</div></div>
+        <div class="item"><div class="time">Zeit Jesu</div><div>Tempel, Tora, Reinheit, Steuern und Messiaserwartung prägen das gesellschaftliche Klima.</div></div>
+        <div class="item"><div class="time">70 n. Chr.</div><div>Der Jerusalemer Tempel wird zerstört – viele Konflikte erhalten rückblickend ein besonderes Gewicht.</div></div>
+      </div>
+    </article>
+  </section>
+  <section class="section">
+    <div class="label">Delegationen öffnen</div>
+    <div class="group-grid">
+      ${Object.values(groupData).map(g=>`
+      <button class="groupcard ${state.group===g.id?'selected':''}" data-group="${g.id}" aria-label="${g.name} öffnen">
+        <div class="cover" style="background-image:url('${g.image}')"><div class="stamp">Akte ${g.icon}</div></div>
+        <div class="body">
+          <div class="title">${g.name}</div>
+          <p>${g.teaser}</p>
+          <div class="meta"><span class="tag">${g.subtitle}</span><span class="tag">${g.motto}</span></div>
+          <div class="open">Akte öffnen →</div>
+        </div>
+      </button>`).join('')}
+    </div>
+  </section>`;
+}
+
+function titleBlock(pre,title,sub){return `<div class="mission-header"><div><div class="badge">${pre}</div><h2>${title}</h2><p class="muted">${sub}</p></div><div class="label">Missionspfad</div></div>`}
+function textField(name,label,placeholder,rows=''){return `<div class="task"><label class="tasklabel" for="${name}">${label}</label><textarea id="${name}" class="field" data-answer="${name}" placeholder="${placeholder}">${esc(get(name))}</textarea></div>`}
+function shortField(name,label,placeholder){return `<div class="task"><label class="tasklabel" for="${name}">${label}</label><textarea id="${name}" class="field" style="min-height:90px" data-answer="${name}" placeholder="${placeholder}">${esc(get(name))}</textarea></div>`}
+function choices(name,opts){
+  return `<div class="choice-pills">${opts.map(v=>`<button class="btn ${getChoice(name)===v?'selected':''}" data-choice="${name}" data-value="${esc(v)}">${v}</button>`).join('')}</div>`
+}
+function finishButton(step, needed){return `<div class="task"><button class="btn primary" data-complete="${step}" data-required="${needed.join(',')}">Mission als erledigt markieren</button><div id="error-${step}"></div></div>`}
+
+function mission0(g){
+  return `<article class="paper mission">
+    ${titleBlock('Mission 01','Die Krise verstehen','Bevor ihr eure Gruppe vertretet, klärt ihr die politische und religiöse Ausgangslage.')}
+    <div class="cards-3">
+      <div class="fact-card"><h4>Politische Lage</h4><p>Judäa lebt unter römischer Vorherrschaft. Lokale Herrscher, Tempelautoritäten und die Besatzungsmacht stehen in einem spannungsreichen Geflecht.</p></div>
+      <div class="fact-card"><h4>Religiöse Lage</h4><p>Der Tempel ist Zentrum des Kultes. Gleichzeitig ringen viele darum, wie Gottes Wille im Alltag, in Reinheitsfragen und in Krisenzeiten auszulegen ist.</p></div>
+      <div class="fact-card"><h4>Gesellschaftliche Lage</h4><p>Steuern, soziale Ungleichheit, Angst vor Verunreinigung und Messiaserwartungen verdichten die Spannungen.</p></div>
+    </div>
+    <div class="notice"><b>Arbeitsmodus:</b> Lest zunächst still. Sprecht dann 3 Minuten in eurer Gruppe: Welche dieser Spannungen dürfte eure Delegation besonders stark empfinden?</div>
+    ${shortField('context_causes','1. Welche zwei oder drei Spannungen prägen die Zeit Jesu besonders?','Formuliert stichwortartig und begründet kurz: z. B. Fremdherrschaft, soziale Not, Tempel, Tora, Reinheit, Messiashoffnung ...')}
+    <div class="task"><label class="tasklabel">2. Formuliert eine Leitfrage der Krise.</label><p class="muted2">Verdichtet eure Beobachtungen zu einer historischen Kernfrage.</p><textarea class="field" style="min-height:95px" data-answer="context_question" placeholder="Zum Beispiel: Wie kann ein Volk Gottes unter Fremdherrschaft leben, ohne seine Identität zu verlieren?">${esc(get('context_question'))}</textarea></div>
+    <details>
+      <summary>Kontrollblick öffnen</summary>
+      <div class="details-body">
+        <p><b>Mögliche Schwerpunkte:</b> römische Besatzung, wirtschaftlicher Druck, die Bedeutung des Tempels, verschiedene Auslegungen der Tora, Reinheitsvorstellungen, Hoffnung auf Befreiung oder Gottes kommendes Reich.</p>
+        <p><b>Wichtig:</b> Nicht nur Religion oder nur Politik – beides greift ineinander. Genau daraus entstehen die unterschiedlichen Antworten der Gruppen.</p>
+      </div>
+    </details>
+    ${finishButton('m0',['context_causes','context_question'])}
+  </article>`
+}
+
+function mission1(g){
+  return `<article class="paper mission">
+    ${titleBlock('Mission 02','Die Gruppenakte erschließen','Jetzt arbeitet ihr mit eurer eigenen Akte. Lest genau, denn auf dieser Grundlage vertretet ihr später eure Position.')}
+    <div class="dossier-hero">
+      <div class="portrait"><img src="${g.image}" alt="Illustration ${g.name}"></div>
+      <div>
+        <div class="label">Akte · ${g.name}</div>
+        <h2>${g.name}</h2>
+        <p class="muted"><b>${g.motto}</b></p>
+        <p>${g.role}</p>
+        <div class="fact-grid">
+          <div class="fact-card"><h4>Haltung zur Tora</h4><p>${g.torah}</p></div>
+          <div class="fact-card"><h4>Verhältnis zu den Römern</h4><p>${g.rome}</p></div>
+          <div class="fact-card"><h4>Worauf hofft die Gruppe?</h4><p>${g.hope}</p></div>
+          <div class="fact-card"><h4>Beziehung zu Jesus</h4><p>${g.relation}</p></div>
+        </div>
+      </div>
+    </div>
+    <div class="note"><b>Vertiefung:</b><ul>${g.deepen.map(x=>`<li>${x}</li>`).join('')}</ul></div>
+    <div class="task"><label class="tasklabel">1. Verdichtet eure Gruppe auf drei Leitbegriffe.</label><p class="muted2">Begriffe statt ganzer Sätze – später helfen sie euch in der Diskussion.</p><textarea class="field" style="min-height:95px" data-answer="dossier_terms" placeholder="z. B. Tempel – Ordnung – Zusammenarbeit mit Rom">${esc(get('dossier_terms'))}</textarea></div>
+    <div class="task"><div class="tasklabel">2. Schneller Wissenscheck</div><p class="muted2">Wählt die Beschreibung, die am besten zu eurer Gruppe passt.</p>
+      ${g.opts.map((o,i)=>`<label class="option"><input type="radio" name="quiz" value="${String.fromCharCode(65+i)}" data-answer="quiz" ${get('quiz')===String.fromCharCode(65+i)?'checked':''}> ${o}</label>`).join('')}
+      <button class="btn" data-checkquiz>Antwort prüfen</button><div id="quizFeedback"></div>
+    </div>
+    ${shortField('dossier_chance','3. Wo liegt die Stärke eurer Gruppe?','Worin könnte euer Weg überzeugend sein?')}
+    ${shortField('dossier_risk','4. Wo liegt die Grenze oder das Risiko eures Weges?','Worin könnte Kritik an eurer Gruppe bestehen?')}
+    <details>
+      <summary>Lösungshinweise zur Gruppenakte</summary>
+      <div class="details-body"><p><b>Mögliche Leitbegriffe:</b> ${g.caseFocus}.</p><p><b>Erwartbar:</b> Eure Stärke und eure Grenze sollen nicht pauschal moralisch sein, sondern historisch nachvollziehbar: z. B. Schutz religiöser Identität, Gefahr der Verhärtung; Sicherung von Ordnung, Gefahr der Anpassung; Reinheit, Gefahr des Rückzugs; Freiheitswille, Gefahr der Gewaltspirale.</p></div>
+    </details>
+    ${finishButton('m1',['dossier_terms','dossier_chance','dossier_risk'])}
+  </article>`
+}
+
+function mission2(g){
+  const choicesHtml = choices('priority', priorityChoices[g.id]);
+  return `<article class="paper mission">
+    ${titleBlock('Mission 03','Die eigene Position aufbauen','Aus Wissen wird jetzt Haltung. Eure Delegation entwickelt ein klares politisch-religiöses Mandat.')}
+    <div class="notice"><b>Team-Gespräch:</b> Sprecht euch zuerst 4 Minuten ab. Erst danach schreibt ihr. Ziel: Ihr vertretet nicht vier Einzelmeinungen, sondern eine gemeinsame Delegationslinie.</div>
+    <div class="task"><div class="tasklabel">1. Welche Priorität hat für euch absoluten Vorrang?</div><p class="muted2">Wählt eine Formulierung. Wenn mehrere passen, entscheidet euch trotzdem für die stärkste.</p>${choicesHtml}</div>
+    ${shortField('manifesto','2. Formuliert eure Kernforderung in einem prägnanten Satz.','Zum Beispiel: Unser Volk braucht ... / Gottes Wille verlangt ...')}
+    ${textField('arguments','3. Sammelt zwei bis drei tragende Argumente für eure Position.','Arbeitet mit Belegen aus eurer Gruppenakte und formuliert möglichst klar.')}    
+    ${shortField('objection','4. Welchen Einwand könnten andere Delegationen gegen euch vorbringen?','Nennt den stärksten möglichen Gegenangriff fair und konkret.')}
+    ${shortField('rebuttal','5. Wie antwortet ihr auf diesen Einwand?','Formuliert eine plausible Entgegnung.')}
+    ${textField('speech','6. Verfasst euer Delegationsstatement für die Konferenz (ca. 60–90 Wörter).','Tipp: Einstieg – Kernforderung – Begründung – Schlusssatz.')}    
+    <details>
+      <summary>Hilfestellung für starke Delegationsreden</summary>
+      <div class="details-body"><p>Eine gute Delegationsrede macht <b>klar</b>, worin das Problem liegt, <b>begründet</b> die eigene Lösung und benennt möglichst auch, warum andere Wege nicht ausreichen. Für eure Gruppe könnte als Grundimpuls gelten: <i>${g.speechHint}</i></p></div>
+    </details>
+    <div class="warnbox"><b>Konferenz-Stop:</b> Wenn alle Felder fertig sind, legt das Tablet kurz beiseite. Klärt: Wer spricht? Wer ergänzt? Wer hört auf Gegenargumente?</div>
+    ${finishButton('m2',['manifesto','arguments','objection','rebuttal','speech'])}
+  </article>`
+}
+
+function mission3(g){
+  return `<article class="paper mission">
+    ${titleBlock('Mission 04','Die Krisenkonferenz','Jetzt wird diskutiert. Eure schriftliche Vorbereitung geht in die mündliche Auseinandersetzung über.')}
+    <div class="notice"><b>Jetzt analog arbeiten:</b> Die Lehrkraft moderiert. Eure Delegationen diskutieren die Streitfälle. Tablets bleiben zunächst geschlossen oder dienen nur als Notizzettel.</div>
+    <div class="cards-3">${sharedCases.map(c=>`<div class="fact-card"><h4>${c.title}</h4><p>${c.text}</p><p class="muted2" style="margin-top:8px">${c.question}</p></div>`).join('')}</div>
+    <div class="task"><div class="tasklabel">Nach der Diskussion: Was war das stärkste Gegenargument einer anderen Gruppe?</div><textarea class="field" style="min-height:100px" data-answer="debate_other" placeholder="Gebt das Gegenargument möglichst fair wieder und sagt, warum es euch herausgefordert hat.">${esc(get('debate_other'))}</textarea></div>
+    <div class="task"><div class="tasklabel">Was musstet ihr an eurer eigenen Position präzisieren oder korrigieren?</div><textarea class="field" style="min-height:100px" data-answer="debate_revise" placeholder="Wo wart ihr angreifbar? Was ist durch die Diskussion klarer geworden?">${esc(get('debate_revise'))}</textarea></div>
+    <div class="task"><div class="tasklabel">Greift einen Problemfall aus dem Arbeitsblatt auf.</div><p class="muted2">Wählt einen Fall (a–d) und notiert knapp, wie eure Gruppe reagieren würde.</p><textarea class="field" style="min-height:100px" data-answer="debate_case" placeholder="Nennt den Fall und formuliert eure Reaktion begründet.">${esc(get('debate_case'))}</textarea></div>
+    <details>
+      <summary>Lösungshilfe zu den Problemfällen öffnen</summary>
+      <div class="details-body">
+        ${Object.values(worksheetHints).map(block=>`<p><b>${block.title}</b></p><ul>${block.rows.map(r=>`<li><b>${r[0]}:</b> ${r[1]}</li>`).join('')}</ul>`).join('')}
+        <p><b>Wichtig:</b> Diese Hinweise sind keine einzigen „richtigen“ Sätze, sondern Orientierungspunkte. Entscheidend ist, dass eure Begründung zur Logik der Gruppe passt.</p>
+      </div>
+    </details>
+    ${finishButton('m3',['debate_other','debate_revise','debate_case'])}
+  </article>`
+}
+
+function mission4(g){
+  return `<article class="paper mission">
+    ${titleBlock('Mission 05','Jesus als neue Perspektive','Erst jetzt kommt Jesus ausdrücklich ins Spiel. Prüft, ob seine Botschaft eure Position stützt, irritiert oder grundlegend infrage stellt.')}
+    <div class="cards-2">
+      <div class="fact-card"><h4>Bibelstelle</h4><p><b>${g.jesusText}</b></p><p>${g.jesusTitle}</p><p class="muted2">Lest die Stelle in eurer Bibel oder einer freigegebenen digitalen Bibel im Zusammenhang.</p></div>
+      <div class="fact-card"><h4>Hinführung</h4><p>${g.jesusSummary}</p><p class="muted2" style="margin-top:8px">Leitgedanke: ${g.jesusLink}</p></div>
+    </div>
+    <div class="note"><b>Arbeitsmodus:</b> Erst die Bibelstelle lesen, dann 2 Minuten still notieren, danach in der Gruppe besprechen.</div>
+    ${shortField('jesus_observe','1. Beobachten: Was tut oder sagt Jesus in dieser Bibelstelle konkret?','Nennt mindestens zwei Beobachtungen am Text.')}
+    ${textField('jesus_compare','2. Vergleichen: Wo gibt es Nähe zu eurer Gruppe – und wo klaren Widerspruch?','Verwendet ausdrücklich die Begriffe Gemeinsamkeit und Unterschied.')}    
+    ${textField('jesus_judgement','3. Bewerten: Ist Jesus für eure Gruppe eher Verbündeter, Herausforderung oder Gegner?','Trefft ein begründetes Urteil und stützt euch auf Gruppenakte + Bibelstelle.')}    
+    <details>
+      <summary>Lösungshinweise zur Jesus-Mission</summary>
+      <div class="details-body">
+        <p><b>Erwartbar:</b> Ein gutes Ergebnis zeigt sowohl Verbindung als auch Differenz. Jesus lässt sich keiner Gruppe einfach zuordnen. Gerade diese Uneindeutigkeit ist theologisch wichtig.</p>
+        <p><b>Für eure Gruppe besonders bedeutsam:</b> ${g.jesusLink}</p>
+      </div>
+    </details>
+    ${finishButton('m4',['jesus_observe','jesus_compare','jesus_judgement'])}
+  </article>`
+}
+
+function mission5(g){
+  return `<article class="paper mission">
+    ${titleBlock('Mission 06','Eigenes Urteil formulieren','Zum Schluss übernehmt ihr selbst das Wort: Was macht Jesu Weg im Vergleich zu den Gruppierungen besonders?')}
+    <div class="notice"><b>Gesprächsphase:</b> Tauscht euch vor dem Schreiben noch einmal 3 Minuten in der Gruppe aus. Erst dann verfasst ihr euer Schlussurteil.</div>
+    <div class="task"><div class="tasklabel">1. Wählt eine These aus.</div>${thesisOptions.map(([v,t])=>`<button class="btn ${getChoice('thesis')===v?'selected':''}" data-choice="thesis" data-value="${v}">${t}</button>`).join(' ')}</div>
+    ${textField('final_judgement','2. Schreibt euer abschließendes historisch-theologisches Urteil (ca. 120–180 Wörter).','Nehmt die gewählte These auf, bezieht mindestens zwei Gruppierungen ein und verweist auf mindestens eine Bibelstelle.')}    
+    ${shortField('transfer','3. Transfer: Welche Spannung aus der Stunde ist auch heute wiedererkennbar?','Zum Beispiel: Ordnung und Freiheit, Regeln und Menschlichkeit, Rückzug und Engagement. Vergleicht verantwortungsvoll, ohne Geschichte und Gegenwart gleichzusetzen.')}    
+    <details>
+      <summary>Kontrollblick zum Schlussurteil</summary>
+      <div class="details-body"><p>Ein starkes Urteil zeigt, dass Jesus <b>in</b> den Konflikten seiner Zeit steht, aber nicht einfach <b>eine weitere Fraktion</b> ist. Er nimmt die Tora ernst, kritisiert verhärtete Auslegung, sucht Menschen auf, stellt Tempelpraxis infrage und weist Gewalt als Heilsweg zurück.</p></div>
+    </details>
+    ${finishButton('m5',['final_judgement','transfer'])}
+    <hr class="divider">
+    <div class="task">
+      <div class="tasklabel">Ergebnismappe sichern</div>
+      <p class="muted">Alle Antworten werden lokal im Browser gespeichert. Öffnet danach die Ergebnismappe und sichert sie als PDF.</p>
+      <div class="choice-pills"><button class="btn primary" id="printInside">↓ PDF erstellen</button><button class="btn" id="jsonInside">↓ Rohdaten sichern</button><button class="btn ghost" data-step="6">Zur Ergebnismappe →</button><button class="btn ghost" data-step="7">Zur gemeinsamen Sicherung →</button></div>
+    </div>
+  </article>`
+}
+
+function mission6(g){
+  return `<article class="paper mission">
+    <div class="printhead"><h1>Judäa am Scheideweg</h1><p>${g.name} · persönliche Ergebnismappe</p></div>
+    ${titleBlock('Ergebnismappe','Alles auf einen Blick','Diese Übersicht dient der Sicherung. Leere Felder zeigen, was noch fehlt.')}
+    <div class="summaryrow"><strong>Delegation</strong><div>${g.name} – ${g.motto}</div></div>
+    <div class="summaryrow"><strong>Wer sind wir?</strong><div>${g.role}</div></div>
+    <div class="summaryrow"><strong>Haltung zur Tora</strong><div>${g.torah}</div></div>
+    <div class="summaryrow"><strong>Verhältnis zu Rom</strong><div>${g.rome}</div></div>
+    <div class="summaryrow"><strong>Beziehung zu Jesus</strong><div>${g.relation}</div></div>
+    ${Object.entries(labels).map(([k,v])=>{
+      const val = k==='priority' ? getChoice('priority') : (k==='thesis' ? (thesisOptions.find(x=>x[0]===getChoice('thesis'))||['','– noch keine These gewählt –'])[1] : get(k));
+      return `<div class="summaryrow"><strong>${v}</strong><div style="white-space:pre-wrap">${val?esc(val):'<em>– noch keine Antwort –</em>'}</div></div>`;
+    }).join('')}
+    <hr class="divider">
+    <div class="label">Vergleichsmatrix</div>
+    <div class="matrix"><table><thead><tr><th>Aspekt</th><th>${g.name}</th><th>Jesus</th></tr></thead><tbody>
+      <tr><td>Tora</td><td>${g.torah}</td><td>nimmt Gottes Willen ernst, widerspricht aber dort, wo Auslegung den Menschen belastet oder ausschließt</td></tr>
+      <tr><td>Rom / Macht</td><td>${g.rome}</td><td>keine einfache Anpassung, aber auch kein Programm bewaffneter Gewalt</td></tr>
+      <tr><td>Weg zur Veränderung</td><td>${g.hope}</td><td>Reich Gottes, Umkehr, Barmherzigkeit, Kritik an ungerechten Strukturen</td></tr>
+    </tbody></table></div>
+    <div class="choice-pills screen-only" style="margin-top:18px"><button class="btn primary" id="printInside">↓ PDF erstellen / drucken</button><button class="btn" id="jsonInside">↓ Antworten sichern</button><button class="btn" data-step="7">◎ Gemeinsam sichern</button></div>
+  </article>`
+}
+
+const missionNames=['Krise verstehen','Gruppenakte','Position aufbauen','Krisenkonferenz','Jesus-Perspektive','Urteil','Ergebnismappe','Plenum'];
+function mission7(g){
+  return `<article class="paper mission">
+    ${titleBlock('Gemeinsame Schlussrunde','Die vier Wege – und Jesus','Präsentationsansicht für das Plenum: Vergleicht die Delegationen, erst danach wird gemeinsam ein Urteil über Jesus formuliert.')}
+    <div class="notice"><b>Jetzt gemeinsam:</b> Schließt die Einzelakten kurz. Jede Delegation hat 45 Sekunden für ihre wichtigste Erkenntnis. Die übrigen prüfen, was sie ergänzt oder korrigiert haben.</div>
+    <div class="matrix"><table><thead><tr><th>Gruppe</th><th>Kernanliegen</th><th>Umgang mit Rom</th><th>Spannung zu Jesus</th></tr></thead><tbody>
+      ${Object.values(groupData).map(d=>`<tr><td><b>${d.name}</b></td><td>${d.motto}</td><td>${d.rome}</td><td>${d.relation}</td></tr>`).join('')}
+    </tbody></table></div>
+    <div class="note" style="margin-top:18px"><b>Diskutiert:</b> Welche zwei der vier Wege wirken auf den ersten Blick ähnlich, unterscheiden sich aber in ihrem Verständnis von Gottes Willen grundlegend? Begründet eure Antwort.</div>
+    <div class="task"><label class="tasklabel">1. Haltet die wichtigste Erkenntnis aus dem Vergleich fest.</label><textarea class="field" data-answer="plenum_comp" placeholder="Nehmt mindestens zwei Gruppierungen in den Blick und erläutert einen zentralen Unterschied.">${esc(get('plenum_comp'))}</textarea></div>
+    <div class="paper light" style="margin:18px 0"><div class="label">Abschlussfrage</div><h2>Warum lässt sich Jesus keiner dieser Gruppierungen eindeutig zuordnen?</h2><p>Verwendet mindestens zwei Beispiele aus der Konferenz und eine Bibelstelle. Zeigt sowohl Gemeinsamkeiten als auch Unterschiede.</p></div>
+    <div class="task"><label class="tasklabel">2. Formuliert die gemeinsame Ergebnissicherung.</label><textarea class="field" data-answer="plenum_jesus" placeholder="Unsere begründete Antwort lautet ...">${esc(get('plenum_jesus'))}</textarea></div>
+    <div class="task"><label class="tasklabel">3. Welche Rückfrage bleibt für euch offen?</label><textarea class="field" style="min-height:95px" data-answer="plenum_question" placeholder="Eine offene historische oder theologische Frage, die sich aus der Diskussion ergibt ...">${esc(get('plenum_question'))}</textarea></div>
+    <details><summary>Abschließenden Erwartungshorizont einblenden (erst nach der Diskussion)</summary><div class="details-body"><p><b>Historischer Kern:</b> Jesus gehört in die religiösen Auseinandersetzungen des Judentums seiner Zeit. Seine Reich-Gottes-Verkündigung, die Zuwendung zu ausgegrenzten Menschen, der Umgang mit Tora und Sabbat sowie sein Verhalten gegenüber Tempel und Gewalt lassen Nähe und Kritik zu unterschiedlichen Gruppen erkennen. Eine Gleichsetzung mit einer der Bewegungen greift deshalb zu kurz.</p><p><b>Methodisch:</b> Historische Gruppen sind keine starren Parteien. Rollenkarten vereinfachen; individuelle Unterschiede und unsichere Rekonstruktionen müssen sichtbar bleiben. Für die Zeit Jesu ist insbesondere die Bezeichnung „Zeloten“ als organisierte Partei umstritten.</p></div></details>
+    <div class="choice-pills screen-only"><button class="btn primary" data-step="6">Ergebnismappe / PDF →</button></div>
+  </article>`;
+}
+
+const missionKeys=['m0','m1','m2','m3','m4','m5'];
+
+function render(){
+  if(!state.group){ $('app').innerHTML = home(); bind(); return; }
+  const g = groupData[state.group];
+  const completeCount = missionKeys.filter(k=>done(k)).length;
+  const missions=[mission0,mission1,mission2,mission3,mission4,mission5,mission6,mission7];
+  $('app').innerHTML = `
+    <section class="section" style="padding-top:22px">
+      <div class="kicker">Akte geöffnet · ${g.subtitle}</div>
+      <h1 style="font-size:clamp(2.1rem,5vw,3.6rem);margin:7px 0">${g.icon} ${g.name}</h1>
+      <p class="muted">${g.motto} · Missionspfad 01–06</p>
+    </section>
+    <div class="app-layout">
+      <aside class="sidebar">
+        <div class="paper">
+          <div class="label">Fortschritt</div>
+          <b>${completeCount} von 6 Missionen erledigt</b>
+          <div class="progress"><div style="width:${(completeCount/6)*100}%"></div></div>
+          <p class="small" style="margin-top:10px">Die Ergebnismappe sammelt alle Eingaben automatisch.</p>
+        </div>
+        <div class="paper">
+          ${missionNames.map((n,i)=>`<button class="navbtn ${state.step===i?'active':''}" data-step="${i}"><span class="n">${i===6?'★':i===7?'◎':String(i+1).padStart(2,'0')}</span>${n}${i<6&&done(missionKeys[i])?'<span class="done">✓</span>':''}</button>`).join('')}
+          <button class="btn tiny ghost" data-backhome style="width:100%;margin-top:12px">← Delegation wechseln</button>
+        </div>
+        <div class="paper">
+          <div class="label">Kurzprofil</div>
+          <p><b>${g.name}</b></p>
+          <p class="muted2">${g.teaser}</p>
+          <div class="chips" style="margin-top:10px"><span class="tag">${g.subtitle}</span></div>
+        </div>
+      </aside>
+      <div class="deck">${missions[state.step](g)}<div class="choice-pills screen-only"><button class="btn ghost" data-step="${Math.max(0,state.step-1)}" ${state.step===0?'disabled':''}>← Zurück</button><button class="btn primary" data-step="${Math.min(7,state.step+1)}" ${state.step===7?'disabled':''}>Nächste Station →</button></div></div>
+    </div>`;
+  bind();
+}
+
+function bind(){
+  document.querySelectorAll('[data-group]').forEach(el=>el.onclick=()=>chooseGroup(el.dataset.group));
+  document.querySelectorAll('[data-step]').forEach(el=>el.onclick=()=>nav(+el.dataset.step));
+  document.querySelectorAll('[data-backhome]').forEach(el=>el.onclick=()=>{state.group=null; save(); render()});
+  document.querySelectorAll('[data-answer]').forEach(el=>{
+    const eventName = el.type==='radio' ? 'change' : 'input';
+    el.addEventListener(eventName, ()=>{
+      if(el.type==='radio') setAnswer(el.dataset.answer, el.value); else setAnswer(el.dataset.answer, el.value);
+    });
+  });
+  document.querySelectorAll('[data-choice]').forEach(el=>el.onclick=()=>{setChoice(el.dataset.choice, el.dataset.value); render()});
+  const quizBtn=document.querySelector('[data-checkquiz]');
+  if(quizBtn) quizBtn.onclick=()=>{
+    const chosen=get('quiz'), g=groupData[state.group];
+    $('quizFeedback').innerHTML = !chosen ? '<div class="feedback warn">Wählt zuerst eine Antwort.</div>' : (chosen===g.correct ? '<div class="feedback">✓ Stimmig. Prüft zur Sicherheit noch einmal, welche Merkmale eure Gruppe besonders kennzeichnen.</div>' : '<div class="feedback warn">Noch nicht ganz. Prüft vor allem Haltung zu Tora, Rom und gesellschaftlicher Rolle der Gruppe.</div>');
+  };
+  document.querySelectorAll('[data-complete]').forEach(el=>el.onclick=()=>{
+    const needed = el.dataset.required.split(',').filter(Boolean);
+    const missing = needed.filter(k=>{
+      if(k==='priority' || k==='thesis') return !getChoice(k);
+      return !get(k) || get(k).trim().length < 25;
+    });
+    const target = $('error-'+el.dataset.complete);
+    if(missing.length){
+      target.innerHTML = `<div class="feedback warn">Bitte ergänzt zuerst noch: ${missing.map(k=>labels[k]||k).join(', ')}. Erwartet werden eigene, begründete Antworten (mindestens ca. 25 Zeichen).</div>`;
+      return;
+    }
+    markDone(el.dataset.complete);
+  });
+  document.querySelectorAll('#printInside').forEach(btn=>btn.onclick=printResult);
+  document.querySelectorAll('#jsonInside').forEach(btn=>btn.onclick=backup);
+}
+
+function printResult(){
+  if(!state.group){alert('Öffnet zuerst eine Gruppenakte.'); return;}
+  state.step=6; save(); render();
+  setTimeout(()=>window.print(),160);
+}
+function backup(){
+  const blob = new Blob([JSON.stringify({format:'judaea_quest_v2',group:state.group,answers:state.answers,choices:state.choices,checked:state.checked}, null, 2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download='Judaea-am-Scheideweg-Antworten.json'; a.click(); setTimeout(()=>URL.revokeObjectURL(url), 1500);
+}
+$('homeBtn').onclick=()=>{state.group=null;save();render()};
+$('exportBtn').onclick=printResult;
+$('backupBtn').onclick=backup;
+$('restoreBtn').onclick=()=> $('restoreInput').click();
+$('restoreInput').addEventListener('change', async function(){ const f=this.files[0]; if(!f)return; try {let d=JSON.parse(await f.text()); if(!d.answers || !d.checked || !d.group || !groupData[d.group]) throw Error('Das ist keine passende Sicherungsdatei.'); if(!confirm('Gespeicherte Antworten aus der Datei übernehmen? Der aktuelle Bearbeitungsstand wird ersetzt.'))return; state.group=d.group;state.step=6;state.answers=d.answers;state.checked=d.checked;state.choices=d.choices||{};save();render();alert('Antworten wurden geladen.');} catch(e){alert('Import fehlgeschlagen: '+e.message)} this.value=''; });
+render();
+</script>
+</body>
+</html>
